@@ -1,0 +1,25 @@
+name:publish
+on:
+  push:
+    branches:["master"]
+  pull_request:
+    branches:["master"]
+jobs: 
+  create-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name:Checkout the code
+        uses: actions/checkout@v2
+      - name:Login to Github Container Registry
+        uses:docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN_CD }}
+      - name: Build the tenant-rabbit Docker image
+        run:
+          docker build . --tag ghcr.io/leifermendez/bot-vendedor-v2:latest
+          docker push ghcr.io/leifermendez/bot-vendedor-v2:latest
+  create-docker-image:
+  deploy:
+  
